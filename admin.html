@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Placar Body Evolution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--red:#c8102e;--red-glow:#ff1f3d;--black:#0a0a0a;--panel:#141414;--panel-2:#1c1c1c;--line:#2a2a2a;--white:#f5f5f5;--muted:#8a8a8a;--gold:#ffd24a;--green:#67d98a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:radial-gradient(900px 500px at 70% -10%,rgba(200,16,46,.18),transparent 60%),var(--black);color:var(--white);font-family:'Barlow Condensed',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .box{width:100%;max-width:440px;background:linear-gradient(160deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:16px;padding:30px}
+  .brand{font-family:'Oswald';font-weight:700;font-size:12px;letter-spacing:.4em;color:var(--red);text-transform:uppercase;margin-bottom:6px}
+  h1{font-family:'Oswald';font-weight:700;font-size:30px;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:24px}
+  label{display:block;font-family:'Oswald';font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;margin-top:16px}
+  input{width:100%;background:var(--black);border:1px solid var(--line);border-radius:8px;color:var(--white);padding:13px 14px;font-family:'Oswald';font-size:18px;font-weight:600}
+  input:focus{outline:none;border-color:var(--red)}
+  button{width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:14px;font-family:'Oswald';font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:15px;cursor:pointer;transition:.2s;margin-top:22px}
+  button:hover{background:var(--red-glow);box-shadow:0 0 18px rgba(255,31,61,.5)}
+  button:disabled{opacity:.5;cursor:wait}
+  .msg{font-family:'Oswald';font-size:14px;letter-spacing:.05em;text-align:center;margin-top:16px;min-height:20px}
+  .msg.ok{color:var(--green)}.msg.err{color:var(--red-glow)}
+  .hidden{display:none}
+  .preview{background:var(--black);border:1px solid var(--line);border-radius:8px;padding:14px;margin-top:18px;font-family:'Oswald'}
+  .preview .pl{font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+  .preview .pv{font-size:24px;font-weight:700;color:var(--gold)}
+  .link{display:block;text-align:center;font-family:'Oswald';font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:18px;text-decoration:none}
+  .link:hover{color:var(--white)}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="brand">Body Evolution • Admin</div>
+  <h1>Atualizar Placar</h1>
+
+  <div id="loginView">
+    <label>Senha de administrador</label>
+    <input type="password" id="pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()">Entrar</button>
+    <div class="msg err" id="loginMsg"></div>
+  </div>
+
+  <div id="adminView" class="hidden">
+    <label>Faturamento acumulado (R$)</label>
+    <input type="number" id="inAcc" placeholder="ex: 45000" step="0.01">
+    <label>Dia atual do mês (1–30)</label>
+    <input type="number" id="inDia" placeholder="ex: 12" min="1" max="30">
+    <button id="saveBtn" onclick="salvar()">Salvar e Publicar</button>
+    <div class="msg" id="saveMsg"></div>
+    <div class="preview">
+      <div class="pl">Último valor publicado</div>
+      <div class="pv" id="curVal">—</div>
+    </div>
+    <a class="link" href="index.html" target="_blank">↗ Abrir placar das consultoras</a>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const fmt=v=>'R$ '+(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function login(){
+  const p=document.getElementById('pass').value;
+  if(p===CONFIG.ADMIN_PASS){
+    document.getElementById('loginView').classList.add('hidden');
+    document.getElementById('adminView').classList.remove('hidden');
+    carregarAtual();
+  }else{
+    document.getElementById('loginMsg').textContent='Senha incorreta';
+  }
+}
+
+async function carregarAtual(){
+  try{
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`,{
+      headers:{'X-Access-Key':CONFIG.READ_KEY,'X-Bin-Meta':'false'}
+    });
+    const d=await r.json();
+    document.getElementById('curVal').textContent=fmt(d.acc)+'  •  dia '+(d.dia||'—');
+    document.getElementById('inAcc').value=d.acc||'';
+    document.getElementById('inDia').value=d.dia||'';
+  }catch(e){console.error(e);}
+}
+
+async function salvar(){
+  const acc=parseFloat(document.getElementById('inAcc').value)||0;
+  const dia=parseInt(document.getElementById('inDia').value)||0;
+  const btn=document.getElementById('saveBtn'),msg=document.getElementById('saveMsg');
+  btn.disabled=true;msg.className='msg';msg.textContent='Publicando…';
+  try{
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':CONFIG.WRITE_KEY},
+      body:JSON.stringify({acc,dia,ts:Date.now()})
+    });
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    msg.className='msg ok';msg.textContent='✔ Publicado! As consultoras já veem o novo valor.';
+    document.getElementById('curVal').textContent=fmt(acc)+'  •  dia '+dia;
+  }catch(e){
+    msg.className='msg err';msg.textContent='Erro ao publicar. Verifique a conexão.';
+    console.error(e);
+  }finally{btn.disabled=false;}
+}
+</script>
+</body>
+</html>
