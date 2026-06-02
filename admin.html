@@ -75,7 +75,7 @@ function login(){
 async function carregarAtual(){
   try{
     const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`,{
-      headers:{'X-Access-Key':CONFIG.READ_KEY,'X-Bin-Meta':'false'}
+      headers:{'X-Master-Key':CONFIG.READ_KEY,'X-Bin-Meta':'false'}
     });
     const d=await r.json();
     document.getElementById('curVal').textContent=fmt(d.acc)+'  •  dia '+(d.dia||'—');

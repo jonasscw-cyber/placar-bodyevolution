@@ -220,7 +220,7 @@ function render(acc,dia,ts){
 async function carregar(){
   try{
     const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`,{
-      headers:{'X-Access-Key':CONFIG.READ_KEY,'X-Bin-Meta':'false'}
+      headers:{'X-Master-Key':CONFIG.READ_KEY,'X-Bin-Meta':'false'}
     });
     const data=await r.json();
     render(data.acc||0, data.dia||0, data.ts);
