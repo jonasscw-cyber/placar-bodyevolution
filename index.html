@@ -72,10 +72,15 @@
   td .num{font-family:'Oswald';font-weight:600}
   tr.hit td{background:rgba(200,16,46,.06)}
   .badges{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .badge{display:flex;gap:12px;align-items:flex-start;background:var(--black);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
-  .badge .ico{font-size:22px;line-height:1}
+  .badge{display:flex;gap:12px;align-items:flex-start;background:var(--black);border:1px solid var(--line);border-radius:10px;padding:12px 14px;position:relative;opacity:.55;transition:.4s}
+  .badge.done{opacity:1;border-color:var(--red);box-shadow:0 0 14px rgba(200,16,46,.25)}
+  .badge .ico{font-size:22px;line-height:1;filter:grayscale(1);transition:.4s}
+  .badge.done .ico{filter:grayscale(0)}
   .badge .bt{font-family:'Oswald';font-weight:600;font-size:14px;letter-spacing:.05em;text-transform:uppercase}
   .badge .bd{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.25}
+  .badge .chk{position:absolute;top:10px;right:12px;font-family:'Oswald';font-weight:700;font-size:12px;color:var(--red);opacity:0;transition:.4s}
+  .badge.done .chk{opacity:1}
+  .badge .cnt{display:inline-block;background:var(--red);color:#fff;font-family:'Oswald';font-weight:700;font-size:12px;border-radius:20px;padding:1px 9px;margin-left:6px;vertical-align:middle}
   .updated{text-align:center;font-family:'Oswald';font-size:12px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
   .updated b{color:var(--white)}
   footer{text-align:center;font-family:'Oswald';font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;padding:16px 0}
@@ -152,10 +157,14 @@
     <div class="card">
       <div class="sect-title">Conquistas da Equipe</div>
       <div class="badges">
-        <div class="badge"><span class="ico">🔥</span><div><div class="bt">Sequência</div><div class="bd">3 dias seguidos acima do pace</div></div></div>
-        <div class="badge"><span class="ico">📅</span><div><div class="bt">Anual da Semana</div><div class="bd">1ª venda de plano anual</div></div></div>
-        <div class="badge"><span class="ico">🚀</span><div><div class="bt">Dia Recorde</div><div class="bd">Maior faturamento do mês</div></div></div>
-        <div class="badge"><span class="ico">🤝</span><div><div class="bt">Resgate</div><div class="bd">Recuperar um ex-aluno</div></div></div>
+        <div class="badge" id="bdg-seq"><span class="chk">✓</span><span class="ico">🔥</span><div><div class="bt">Sequência<span class="cnt" id="cnt-seq" style="display:none">0</span></div><div class="bd">3 dias seguidos acima do pace</div></div></div>
+        <div class="badge" id="bdg-anual"><span class="chk">✓</span><span class="ico">📅</span><div><div class="bt">Anual da Semana<span class="cnt" id="cnt-anual" style="display:none">0</span></div><div class="bd">1ª venda de plano anual</div></div></div>
+        <div class="badge" id="bdg-recorde"><span class="chk">✓</span><span class="ico">🚀</span><div><div class="bt">Dia Recorde<span class="cnt" id="cnt-recorde" style="display:none">0</span></div><div class="bd">Maior faturamento do mês</div></div></div>
+        <div class="badge" id="bdg-resgate"><span class="chk">✓</span><span class="ico">🤝</span><div><div class="bt">Resgate<span class="cnt" id="cnt-resgate" style="display:none">0</span></div><div class="bd">Recuperar um ex-aluno</div></div></div>
+        <div class="badge" id="bdg-tri"><span class="chk">✓</span><span class="ico">🥉</span><div><div class="bt">Plano Trimestral<span class="cnt" id="cnt-tri" style="display:none">0</span></div><div class="bd">Venda de plano de 3 meses</div></div></div>
+        <div class="badge" id="bdg-sem"><span class="chk">✓</span><span class="ico">🥈</span><div><div class="bt">Plano Semestral<span class="cnt" id="cnt-sem" style="display:none">0</span></div><div class="bd">Venda de plano de 6 meses</div></div></div>
+        <div class="badge" id="bdg-ano"><span class="chk">✓</span><span class="ico">🥇</span><div><div class="bt">Plano Anual<span class="cnt" id="cnt-ano" style="display:none">0</span></div><div class="bd">Venda de plano de 12 meses</div></div></div>
+        <div class="badge" id="bdg-dezoito"><span class="chk">✓</span><span class="ico">💎</span><div><div class="bt">Plano 18 Meses<span class="cnt" id="cnt-dezoito" style="display:none">0</span></div><div class="bd">Venda de plano de 18 meses</div></div></div>
       </div>
     </div>
   </div>
@@ -217,13 +226,40 @@ function render(acc,dia,ts){
   if(acc>=MAX) party();
 }
 
+let conqAnterior=null;
+function renderConquistas(c){
+  const chaves=['seq','anual','recorde','resgate','tri','sem','ano','dezoito'];
+  let novaAtivada=false;
+  chaves.forEach(k=>{
+    const item=c[k]||{on:false,n:0};
+    const badge=document.getElementById('bdg-'+k);
+    const cnt=document.getElementById('cnt-'+k);
+    if(!badge)return;
+    badge.classList.toggle('done', !!item.on);
+    if(item.on && item.n>1){ cnt.style.display='inline-block'; cnt.textContent=item.n+'x'; }
+    else cnt.style.display='none';
+    // detecta ativação nova ou contador que subiu, comparado ao estado anterior
+    if(conqAnterior){
+      const ant=conqAnterior[k]||{on:false,n:0};
+      if((item.on && !ant.on) || ((item.n||0) > (ant.n||0))) novaAtivada=true;
+    }
+  });
+  if(novaAtivada) party();
+  conqAnterior=JSON.parse(JSON.stringify(c));
+}
+
 async function carregar(){
   try{
     const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`,{
       headers:{'X-Master-Key':CONFIG.READ_KEY,'X-Bin-Meta':'false'}
     });
     const data=await r.json();
-    render(data.acc||0, data.dia||0, data.ts);
+    let acc=data.acc||0;
+    if((!acc || acc===0) && data.vendas && typeof data.vendas==='object'){
+      acc=Object.values(data.vendas).reduce((a,b)=>a+(parseFloat(b)||0),0);
+    }
+    render(acc, data.dia||0, data.ts);
+    renderConquistas(data.conquistas||{});
   }catch(e){
     document.getElementById('statusTxt').textContent='Erro ao carregar dados';
     console.error(e);
@@ -235,15 +271,15 @@ setInterval(carregar, 60000); // atualiza a cada 1 min
 // confetti
 const cv=document.getElementById('confetti'),cx=cv.getContext('2d');let parts=[];
 function resize(){cv.width=innerWidth;cv.height=innerHeight}resize();addEventListener('resize',resize);
-let partied=false;
-function party(){if(partied)return;partied=true;
+let looping=false;
+function party(){
   const cols=['#c8102e','#ff1f3d','#ffd24a','#7fe9ff','#ffffff'];
   for(let i=0;i<140;i++)parts.push({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14-4,g:.3,s:Math.random()*7+3,c:cols[Math.random()*cols.length|0],life:120,rot:Math.random()*6});
-  loop();}
+  if(!looping){looping=true;loop();}}
 function loop(){cx.clearRect(0,0,cv.width,cv.height);
   parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.life--;p.rot+=.2;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s);cx.restore();});
   parts=parts.filter(p=>p.life>0&&p.y<cv.height+40);
-  if(parts.length)requestAnimationFrame(loop);else cx.clearRect(0,0,cv.width,cv.height);}
+  if(parts.length)requestAnimationFrame(loop);else{cx.clearRect(0,0,cv.width,cv.height);looping=false;}}
 </script>
 </body>
 </html>
