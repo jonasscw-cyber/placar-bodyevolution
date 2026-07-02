@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Escalada — Body Evolution</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cpath d='M32 12 L50 46 L14 46 Z' fill='%23e8f4ff'/%3E%3Cpath d='M32 12 L41 29 L36 30 L32 24 L28 30 L23 29 Z' fill='%23c8102e'/%3E%3Cpath d='M14 46 L50 46 L46 52 L18 52 Z' fill='%237fb8e0'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#c8102e;--red-dark:#8b0a1f;--red-glow:#ff1f3d;--black:#0a0a0a;
+    --panel:#141922;--panel-2:#1b222e;--line:#2b3442;--white:#f5f8fc;--muted:#8595a8;
+    --gold:#ffd24a;--silver:#cfd4d8;--bronze:#cd7f32;--diamond:#7fe9ff;
+    --ice:#a8d8f0;--snow:#e8f4ff;--sky:#0d1520;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:
+      radial-gradient(1200px 700px at 75% -15%, rgba(127,185,224,.14), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(200,16,46,.12), transparent 55%),
+      linear-gradient(180deg,#0d1520,#0a0f16);
+    color:var(--white);font-family:'Barlow Condensed',sans-serif;min-height:100vh;padding:24px;overflow-x:hidden}
+  .wrap{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+  header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;border-bottom:2px solid var(--red);padding-bottom:18px;margin-bottom:26px}
+  .brand{font-family:'Oswald';font-weight:700;font-size:14px;letter-spacing:.4em;color:var(--ice);text-transform:uppercase}
+  h1{font-family:'Oswald';font-weight:700;font-size:clamp(34px,6vw,62px);line-height:.92;text-transform:uppercase;letter-spacing:-.01em}
+  h1 .flag{color:var(--red)}
+  .period{font-family:'Oswald';font-weight:500;font-size:15px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;text-align:right}
+  .team{font-family:'Oswald';font-weight:600;font-size:13px;letter-spacing:.2em;color:var(--white);margin-top:6px;text-align:right}
+  .team span{color:var(--red)}
+  .hero{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-bottom:26px}
+  @media(max-width:760px){.hero{grid-template-columns:1fr}}
+  .card{background:linear-gradient(160deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:14px;padding:22px}
+  .card .label{font-family:'Oswald';font-weight:500;letter-spacing:.22em;font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+  .bignum{font-family:'Oswald';font-weight:700;font-size:clamp(40px,7vw,68px);line-height:1;color:var(--white)}
+  .bignum.acc{color:var(--ice);text-shadow:0 0 28px rgba(168,216,240,.4)}
+  .sub{font-family:'Barlow Condensed';font-size:16px;color:var(--muted);margin-top:8px}
+  .sub b{color:var(--white);font-weight:600}
+  .pace-row{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+  .pace-chip{flex:1;min-width:120px;background:var(--sky);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .pace-chip .pl{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;font-family:'Oswald'}
+  .pace-chip .pv{font-family:'Oswald';font-weight:600;font-size:22px;margin-top:2px}
+  .status{display:inline-flex;align-items:center;gap:8px;font-family:'Oswald';font-weight:600;font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:30px;margin-top:14px}
+  .status.ahead{background:rgba(80,200,120,.12);color:#67d98a;border:1px solid rgba(80,200,120,.35)}
+  .status.behind{background:rgba(168,216,240,.1);color:var(--ice);border:1px solid rgba(168,216,240,.3)}
+  .dot{width:9px;height:9px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  /* MONTANHA */
+  .track-wrap{background:linear-gradient(180deg,#0f1a28,#141922);border:1px solid var(--line);border-radius:14px;padding:26px 24px 24px;margin-bottom:26px;position:relative;overflow:hidden}
+  .track-title{font-family:'Oswald';font-weight:600;letter-spacing:.2em;font-size:13px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;position:relative;z-index:3}
+  .mountain{position:relative;height:340px;border-radius:10px;overflow:hidden;background:linear-gradient(180deg,#0d1826 0%,#122032 45%,#0f1826 100%)}
+  .mtn-svg{position:absolute;inset:0;width:100%;height:100%}
+  .climber{position:absolute;font-size:26px;transition:left 1.6s cubic-bezier(.2,.8,.2,1),bottom 1.6s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 8px rgba(255,31,61,.7));z-index:6;transform:translate(-50%,50%)}
+  .pace-flag{position:absolute;font-size:16px;transition:left 1.6s,bottom 1.6s;z-index:5;transform:translate(-50%,50%);opacity:.7}
+  .pace-flag::after{content:'RITMO';position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:'Oswald';font-size:8px;letter-spacing:.12em;color:var(--ice);white-space:nowrap}
+  .camp{position:absolute;transform:translate(-50%,50%);z-index:4;text-align:center;opacity:.45;transition:opacity .5s}
+  .camp.reached{opacity:1}
+  .camp .flag{font-size:22px;display:block;filter:grayscale(1);transition:filter .5s,transform .3s}
+  .camp.reached .flag{filter:grayscale(0);transform:scale(1.12)}
+  .camp .cname{font-family:'Oswald';font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;white-space:nowrap}
+  .camp .cval{font-family:'Barlow Condensed';font-size:11px;color:var(--ice);white-space:nowrap}
+  .camp.bronze .cname{color:var(--bronze)}.camp.prata .cname{color:var(--silver)}
+  .camp.ouro .cname{color:var(--gold)}.camp.diamante .cname{color:var(--diamond)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:26px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .sect-title{font-family:'Oswald';font-weight:600;letter-spacing:.2em;font-size:13px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:16px}
+  th{font-family:'Oswald';font-weight:500;font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+  td.faixa{font-family:'Oswald';font-weight:700;letter-spacing:.08em}
+  td .num{font-family:'Oswald';font-weight:600}
+  tr.hit td{background:rgba(168,216,240,.06)}
+  .diario-stats{display:flex;gap:10px;margin-bottom:16px}
+  .dstat{flex:1;background:var(--sky);border:1px solid var(--line);border-radius:10px;padding:11px 12px;text-align:center}
+  .dstat .dsl{font-family:'Oswald';font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .dstat .dsv{font-family:'Oswald';font-weight:700;font-size:19px;margin-top:3px;color:var(--white)}
+  .diario-lista{max-height:230px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+  .diario-lista::-webkit-scrollbar{width:6px}
+  .diario-lista::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+  .drow{display:flex;align-items:center;justify-content:space-between;background:var(--sky);border:1px solid var(--line);border-radius:8px;padding:9px 13px;transition:.3s}
+  .drow.best{border-color:var(--gold);box-shadow:0 0 12px rgba(255,210,74,.18)}
+  .drow .dd{font-family:'Oswald';font-weight:600;font-size:14px;letter-spacing:.05em;color:var(--ice);display:flex;align-items:center;gap:7px}
+  .drow .dv{font-family:'Oswald';font-weight:700;font-size:16px;color:var(--white)}
+  .drow.best .dv{color:var(--gold)}
+  .drow .crown{font-size:14px}
+  .diario-vazio{font-family:'Barlow Condensed';font-size:15px;color:var(--muted);text-align:center;padding:30px 10px;line-height:1.4}
+  .updated{text-align:center;font-family:'Oswald';font-size:12px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+  .updated b{color:var(--white)}
+  footer{text-align:center;font-family:'Oswald';font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;padding:16px 0}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+  /* neve de fundo */
+  #snow{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5}
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">Body Evolution • Julho</div>
+      <h1>A <span class="flag">Escalada</span></h1>
+    </div>
+    <div>
+      <div class="period">01 → 31 Julho 2026</div>
+      <div class="team">EQUIPE: <span>Katia</span> + <span>Iohany</span></div>
+    </div>
+  </header>
+
+  <div class="updated">Atualizado em <b id="lastUpdate">—</b></div>
+
+  <div class="hero">
+    <div class="card">
+      <div class="label">Faturamento acumulado</div>
+      <div class="bignum acc" id="accDisplay">R$ 0,00</div>
+      <div class="sub">Meta principal (Acampamento Ouro): <b>R$ 99.400,00</b></div>
+      <div class="pace-row">
+        <div class="pace-chip"><div class="pl">Falta p/ próximo</div><div class="pv" id="faltaNext">—</div></div>
+        <div class="pace-chip"><div class="pl">Dias restantes</div><div class="pv" id="diasRest">—</div></div>
+        <div class="pace-chip"><div class="pl">Ritmo/dia p/ Ouro</div><div class="pv" id="ritmoDia">—</div></div>
+      </div>
+      <div class="status behind" id="statusBox"><span class="dot"></span><span id="statusTxt">Carregando…</span></div>
+    </div>
+    <div class="card">
+      <div class="label">Próximo acampamento</div>
+      <div class="bignum" id="nextMedal" style="font-size:clamp(34px,5vw,52px)">🏕️ Bronze</div>
+      <div class="sub" id="nextMedalVal">R$ 84.200,00</div>
+      <div class="sub" style="margin-top:14px">Bônus da faixa em jogo agora:</div>
+      <div class="bignum" id="nextBonus" style="font-size:34px;color:var(--gold)">R$ 600</div>
+      <div class="sub" id="nextBonusC" style="font-size:13px">(equipe • R$ 300 por consultora)</div>
+    </div>
+  </div>
+
+  <div class="track-wrap">
+    <div class="track-title">A Montanha — base Julho/2025: R$ 108.000,00 ❄️</div>
+    <div class="mountain" id="mountain">
+      <svg class="mtn-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <!-- encosta principal -->
+        <polygon points="2,100 50,8 98,100" fill="#1a2a3d"/>
+        <polygon points="20,100 50,8 80,100" fill="#20344a"/>
+        <!-- neve no topo -->
+        <polygon points="50,8 60,26 55,25 50,18 45,25 40,26" fill="#e8f4ff"/>
+        <polygon points="50,18 54,27 50,24 46,27" fill="#c8102e" opacity=".85"/>
+        <!-- trilha -->
+        <polyline points="18,94 30,66 40,38 50,10" fill="none" stroke="#4a5e74" stroke-width="1" stroke-dasharray="2 2" opacity=".8"/>
+      </svg>
+      <!-- acampamentos posicionados sobre a trilha (left / bottom em %) -->
+      <div class="camp bronze" data-meta="84200" style="left:18%;bottom:6%"><span class="flag">🏕️</span><div class="cname">Bronze</div><div class="cval">R$ 84.200</div></div>
+      <div class="camp prata" data-meta="91800" style="left:30%;bottom:34%"><span class="flag">⛺</span><div class="cname">Prata</div><div class="cval">R$ 91.800</div></div>
+      <div class="camp ouro" data-meta="99400" style="left:40%;bottom:62%"><span class="flag">🏔️</span><div class="cname">Ouro</div><div class="cval">R$ 99.400</div></div>
+      <div class="camp diamante" data-meta="111200" style="left:50%;bottom:92%"><span class="flag">⛰️</span><div class="cname">Cume</div><div class="cval">R$ 111.200</div></div>
+      <!-- ritmo e alpinista -->
+      <div class="pace-flag" id="paceFlag" style="left:18%;bottom:6%">🚩</div>
+      <div class="climber" id="climber" style="left:18%;bottom:6%">🧗</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="sect-title">Acampamentos & Bônus</div>
+      <table id="tabFaixas">
+        <thead><tr><th>Acampamento</th><th>Meta</th><th>Bônus equipe</th><th>Por consultora</th></tr></thead>
+        <tbody>
+          <tr data-meta="84200"><td class="faixa" style="color:var(--bronze)">🏕️ Bronze</td><td class="num">R$ 84.200</td><td>R$ 600</td><td>R$ 300</td></tr>
+          <tr data-meta="91800"><td class="faixa" style="color:var(--silver)">⛺ Prata</td><td class="num">R$ 91.800</td><td>R$ 1.200</td><td>R$ 600</td></tr>
+          <tr data-meta="99400"><td class="faixa" style="color:var(--gold)">🏔️ Ouro</td><td class="num">R$ 99.400</td><td>R$ 2.000</td><td>R$ 1.000</td></tr>
+          <tr data-meta="111200"><td class="faixa" style="color:var(--diamond)">⛰️ Cume</td><td class="num">R$ 111.200</td><td>R$ 3.000</td><td>R$ 1.500</td></tr>
+        </tbody>
+      </table>
+      <div class="sub" style="font-size:13px">Bônus substitutivo: vale o acampamento mais alto atingido (não acumula).</div>
+    </div>
+    <div class="card">
+      <div class="sect-title">Diário da Escalada</div>
+      <div class="diario-stats">
+        <div class="dstat"><div class="dsl">Melhor dia</div><div class="dsv" id="melhorDia">—</div></div>
+        <div class="dstat"><div class="dsl">Média/dia</div><div class="dsv" id="mediaDia">—</div></div>
+        <div class="dstat"><div class="dsl">Dias lançados</div><div class="dsv" id="qtdDias">—</div></div>
+      </div>
+      <div class="diario-lista" id="diarioLista">
+        <div class="diario-vazio">Os lançamentos aparecerão aqui conforme a escalada avança ❄️</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Body Evolution • Velha Central, Blumenau • Rumo ao Cume ⛰️</footer>
+</div>
+<canvas id="confetti"></canvas>
+
+<script src="config.js"></script>
+<script>
+const BASE=108000, DIAS_TOTAL=31, OURO=99400, MAX=111200;
+// pontos da trilha (acumulado -> posição left/bottom em %), para o alpinista seguir a montanha
+const TRILHA=[
+  {v:0,      left:18, bottom:6},
+  {v:84200,  left:18, bottom:6},   // Bronze
+  {v:91800,  left:30, bottom:34},  // Prata
+  {v:99400,  left:40, bottom:62},  // Ouro
+  {v:111200, left:50, bottom:92},  // Cume
+];
+const metas=[
+  {nome:'🏕️ Bronze',val:84200,bonusEq:'R$ 600',bonusC:'R$ 300'},
+  {nome:'⛺ Prata',val:91800,bonusEq:'R$ 1.200',bonusC:'R$ 600'},
+  {nome:'🏔️ Ouro',val:99400,bonusEq:'R$ 2.000',bonusC:'R$ 1.000'},
+  {nome:'⛰️ Cume',val:111200,bonusEq:'R$ 3.000',bonusC:'R$ 1.500'},
+];
+const fmt=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0=v=>'R$ '+Math.round(v).toLocaleString('pt-BR');
+
+// interpola posição na trilha para um valor de faturamento
+function posParaValor(v){
+  v=Math.max(0,Math.min(v,MAX));
+  for(let i=1;i<TRILHA.length;i++){
+    if(v<=TRILHA[i].v){
+      const a=TRILHA[i-1],b=TRILHA[i];
+      const t=(v-a.v)/(b.v-a.v||1);
+      return {left:a.left+(b.left-a.left)*t, bottom:a.bottom+(b.bottom-a.bottom)*t};
+    }
+  }
+  const last=TRILHA[TRILHA.length-1];
+  return {left:last.left,bottom:last.bottom};
+}
+
+function render(acc,dia,ts){
+  document.getElementById('accDisplay').textContent=fmt(acc);
+  // alpinista sobe a trilha
+  const p=posParaValor(acc);
+  const climber=document.getElementById('climber');
+  climber.style.left=p.left+'%'; climber.style.bottom=p.bottom+'%';
+  // acampamentos alcançados
+  document.querySelectorAll('.camp').forEach(cp=>{
+    cp.classList.toggle('reached', acc>=parseFloat(cp.dataset.meta));
+  });
+  document.querySelectorAll('#tabFaixas tbody tr').forEach(tr=>{
+    tr.classList.toggle('hit', acc>=parseFloat(tr.dataset.meta));
+  });
+  const next=metas.find(m=>acc<m.val);
+  if(next){
+    document.getElementById('nextMedal').textContent=next.nome;
+    document.getElementById('nextMedalVal').textContent=fmt(next.val);
+    document.getElementById('nextBonus').textContent=next.bonusEq;
+    document.getElementById('nextBonusC').textContent='(equipe • '+next.bonusC+' por consultora)';
+    document.getElementById('faltaNext').textContent=fmt0(next.val-acc);
+  }else{
+    document.getElementById('nextMedal').textContent='⛰️ Cume conquistado!';
+    document.getElementById('nextMedalVal').textContent='Meta máxima atingida 🎉';
+    document.getElementById('faltaNext').textContent='✔';
+  }
+  const diasRest=Math.max(DIAS_TOTAL-dia,0);
+  document.getElementById('diasRest').textContent=diasRest+' dias';
+  const faltaOuro=Math.max(OURO-acc,0);
+  document.getElementById('ritmoDia').textContent=diasRest>0?fmt0(faltaOuro/diasRest)+'/dia':'—';
+  if(dia>0){
+    const esperado=OURO*(dia/DIAS_TOTAL);
+    const pf=posParaValor(esperado);
+    const paceFlag=document.getElementById('paceFlag');
+    paceFlag.style.left=pf.left+'%'; paceFlag.style.bottom=pf.bottom+'%';
+    const box=document.getElementById('statusBox'),txt=document.getElementById('statusTxt');
+    if(acc>=esperado){box.className='status ahead';txt.textContent='Adiantadas na subida! 🔥';}
+    else{box.className='status behind';txt.textContent='Faltam '+fmt0(esperado-acc)+' p/ alcançar o ritmo';}
+  }
+  if(ts){
+    const d=new Date(ts);
+    document.getElementById('lastUpdate').textContent=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }
+  if(acc>=MAX) party();
+}
+
+function renderDiario(vendas){
+  vendas = vendas && typeof vendas==='object' ? vendas : {};
+  const dias=Object.keys(vendas).map(Number).filter(d=>!isNaN(d)).sort((a,b)=>a-b);
+  const lista=document.getElementById('diarioLista');
+  if(dias.length===0){
+    lista.innerHTML='<div class="diario-vazio">Os lançamentos aparecerão aqui conforme a escalada avança ❄️</div>';
+    document.getElementById('melhorDia').textContent='—';
+    document.getElementById('mediaDia').textContent='—';
+    document.getElementById('qtdDias').textContent='—';
+    return;
+  }
+  // estatísticas
+  const valores=dias.map(d=>parseFloat(vendas[d])||0);
+  const maxVal=Math.max(...valores);
+  const total=valores.reduce((a,b)=>a+b,0);
+  const media=total/dias.length;
+  document.getElementById('melhorDia').textContent=fmt0(maxVal);
+  document.getElementById('mediaDia').textContent=fmt0(media);
+  document.getElementById('qtdDias').textContent=dias.length;
+  // lista (mais recente no topo)
+  lista.innerHTML=dias.slice().reverse().map(d=>{
+    const v=parseFloat(vendas[d])||0;
+    const best=(v===maxVal && maxVal>0);
+    return `<div class="drow${best?' best':''}">
+      <div class="dd">${best?'<span class="crown">👑</span>':'🏔️'} Dia ${d}</div>
+      <div class="dv">${fmt0(v)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function carregar(){
+  try{
+    const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`,{
+      headers:{'X-Master-Key':CONFIG.READ_KEY,'X-Bin-Meta':'false'}
+    });
+    const data=await r.json();
+    let acc=data.acc||0;
+    if((!acc || acc===0) && data.vendas && typeof data.vendas==='object'){
+      acc=Object.values(data.vendas).reduce((a,b)=>a+(parseFloat(b)||0),0);
+    }
+    render(acc, data.dia||0, data.ts);
+    renderDiario(data.vendas);
+  }catch(e){
+    document.getElementById('statusTxt').textContent='Erro ao carregar dados';
+    console.error(e);
+  }
+}
+carregar();
+setInterval(carregar, 60000);
+
+// ---- neve de fundo (contínua) ----
+const sc=document.getElementById('snow'),sx=sc.getContext('2d');
+let flakes=[];
+function snowResize(){sc.width=innerWidth;sc.height=innerHeight}
+snowResize();addEventListener('resize',snowResize);
+for(let i=0;i<70;i++)flakes.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2.5+1,vy:Math.random()*.6+.3,vx:(Math.random()-.5)*.4});
+function snowLoop(){
+  sx.clearRect(0,0,sc.width,sc.height);
+  sx.fillStyle='rgba(200,225,245,.85)';
+  flakes.forEach(f=>{f.y+=f.vy;f.x+=f.vx;if(f.y>sc.height){f.y=-5;f.x=Math.random()*sc.width;}
+    sx.beginPath();sx.arc(f.x,f.y,f.r,0,6.28);sx.fill();});
+  requestAnimationFrame(snowLoop);
+}
+snowLoop();
+
+// ---- confetti/nevasca de comemoração ----
+const cv=document.getElementById('confetti'),cx=cv.getContext('2d');let parts=[];
+function resize(){cv.width=innerWidth;cv.height=innerHeight}resize();addEventListener('resize',resize);
+let looping=false;
+function party(){
+  const cols=['#c8102e','#ff1f3d','#ffffff','#7fe9ff','#a8d8f0'];
+  for(let i=0;i<150;i++)parts.push({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*14,vy:(Math.random()-.5)*14-4,g:.3,s:Math.random()*7+3,c:cols[Math.random()*cols.length|0],life:120,rot:Math.random()*6});
+  if(!looping){looping=true;loop();}}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.life--;p.rot+=.2;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s);cx.restore();});
+  parts=parts.filter(p=>p.life>0&&p.y<cv.height+40);
+  if(parts.length)requestAnimationFrame(loop);else{cx.clearRect(0,0,cv.width,cv.height);looping=false;}}
+</script>
+</body>
+</html>
