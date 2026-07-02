@@ -144,16 +144,16 @@
         <polygon points="50,8 60,26 55,25 50,18 45,25 40,26" fill="#e8f4ff"/>
         <polygon points="50,18 54,27 50,24 46,27" fill="#c8102e" opacity=".85"/>
         <!-- trilha -->
-        <polyline points="18,94 30,66 40,38 50,10" fill="none" stroke="#4a5e74" stroke-width="1" stroke-dasharray="2 2" opacity=".8"/>
+        <polyline points="8,98 20,92 30,66 40,38 50,10" fill="none" stroke="#4a5e74" stroke-width="1" stroke-dasharray="2 2" opacity=".8"/>
       </svg>
       <!-- acampamentos posicionados sobre a trilha (left / bottom em %) -->
-      <div class="camp bronze" data-meta="84200" style="left:18%;bottom:6%"><span class="flag">🏕️</span><div class="cname">Bronze</div><div class="cval">R$ 84.200</div></div>
+      <div class="camp bronze" data-meta="84200" style="left:20%;bottom:8%"><span class="flag">🏕️</span><div class="cname">Bronze</div><div class="cval">R$ 84.200</div></div>
       <div class="camp prata" data-meta="91800" style="left:30%;bottom:34%"><span class="flag">⛺</span><div class="cname">Prata</div><div class="cval">R$ 91.800</div></div>
       <div class="camp ouro" data-meta="99400" style="left:40%;bottom:62%"><span class="flag">🏔️</span><div class="cname">Ouro</div><div class="cval">R$ 99.400</div></div>
       <div class="camp diamante" data-meta="111200" style="left:50%;bottom:92%"><span class="flag">⛰️</span><div class="cname">Cume</div><div class="cval">R$ 111.200</div></div>
       <!-- ritmo e alpinista -->
-      <div class="pace-flag" id="paceFlag" style="left:18%;bottom:6%">🚩</div>
-      <div class="climber" id="climber" style="left:18%;bottom:6%">🧗</div>
+      <div class="pace-flag" id="paceFlag" style="left:8%;bottom:2%">🚩</div>
+      <div class="climber" id="climber" style="left:8%;bottom:2%">🧗</div>
     </div>
   </div>
 
@@ -193,8 +193,8 @@
 const BASE=108000, DIAS_TOTAL=31, OURO=99400, MAX=111200;
 // pontos da trilha (acumulado -> posição left/bottom em %), para o alpinista seguir a montanha
 const TRILHA=[
-  {v:0,      left:18, bottom:6},
-  {v:84200,  left:18, bottom:6},   // Bronze
+  {v:0,      left:8,  bottom:2},   // pé da montanha (largada)
+  {v:84200,  left:20, bottom:8},   // Bronze
   {v:91800,  left:30, bottom:34},  // Prata
   {v:99400,  left:40, bottom:62},  // Ouro
   {v:111200, left:50, bottom:92},  // Cume
