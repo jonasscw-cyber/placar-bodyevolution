@@ -28,14 +28,10 @@
   .preview .pv{font-size:24px;font-weight:700;color:var(--gold)}
   .link{display:block;text-align:center;font-family:'Oswald';font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:18px;text-decoration:none}
   .link:hover{color:var(--white)}
-  .conq{display:flex;align-items:center;justify-content:space-between;background:var(--black);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px}
-  .conq.on{border-color:var(--red);background:rgba(200,16,46,.08)}
-  .conq .nm{font-family:'Oswald';font-size:14px;letter-spacing:.03em}
-  .conq .ctrl{display:flex;align-items:center;gap:8px}
-  .conq .tgl{font-family:'Oswald';font-size:11px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:20px;padding:4px 12px;cursor:pointer;color:var(--muted);background:none}
-  .conq.on .tgl{background:var(--red);color:#fff;border-color:var(--red)}
-  .conq .stp{width:26px;height:26px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);color:#fff;font-family:'Oswald';font-size:16px;cursor:pointer;padding:0;line-height:1}
-  .conq .num{font-family:'Oswald';font-weight:700;font-size:16px;min-width:28px;text-align:center}
+  .resumo{display:flex;gap:8px;margin-top:18px}
+  .rstat{flex:1;background:var(--black);border:1px solid var(--line);border-radius:8px;padding:11px 8px;text-align:center}
+  .rstat .rl{font-family:'Oswald';font-size:9px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .rstat .rv{font-family:'Oswald';font-weight:700;font-size:16px;margin-top:3px;color:var(--gold)}
 </style>
 </head>
 <body>
@@ -51,8 +47,8 @@
   </div>
 
   <div id="adminView" class="hidden">
-    <label>Dia do mês (1–30)</label>
-    <input type="number" id="inDia" placeholder="ex: 2" min="1" max="30">
+    <label>Dia do mês (1–31)</label>
+    <input type="number" id="inDia" placeholder="ex: 2" min="1" max="31">
     <label>Venda DESTE dia (R$)</label>
     <input type="number" id="inVenda" placeholder="ex: 5227.10" step="0.01">
     <button id="saveBtn" onclick="salvar()">Lançar e Publicar</button>
@@ -64,10 +60,12 @@
       <div id="listaDias" style="font-family:'Barlow Condensed';font-size:15px;color:var(--white);margin-top:6px;line-height:1.5">—</div>
     </div>
 
-    <div class="pl" style="margin-top:22px;color:var(--red-glow)">Conquistas da equipe</div>
-    <div id="conqWrap" style="margin-top:10px"></div>
-    <button id="conqBtn" onclick="salvarConquistas()" style="margin-top:14px;background:#333">Salvar Conquistas</button>
-    <div class="msg" id="conqMsg"></div>
+    <div class="pl" style="margin-top:22px;color:var(--gold)">Resumo do Diário</div>
+    <div class="resumo">
+      <div class="rstat"><div class="rl">Melhor dia</div><div class="rv" id="rMelhor">—</div></div>
+      <div class="rstat"><div class="rl">Média/dia</div><div class="rv" id="rMedia">—</div></div>
+      <div class="rstat"><div class="rl">Dias</div><div class="rv" id="rDias">—</div></div>
+    </div>
 
     <a class="link" href="index.html" target="_blank">↗ Abrir placar das consultoras</a>
   </div>
@@ -98,6 +96,20 @@ function atualizarPreview(){
   document.getElementById('listaDias').innerHTML = dias.length
     ? dias.map(d=>`Dia ${d}: ${fmt(vendas[d])}`).join('<br>')
     : '—';
+  // resumo do diário
+  const fmt0=v=>'R$ '+Math.round(v).toLocaleString('pt-BR');
+  if(dias.length){
+    const vals=dias.map(d=>parseFloat(vendas[d])||0);
+    const melhor=Math.max(...vals);
+    const media=vals.reduce((a,b)=>a+b,0)/dias.length;
+    document.getElementById('rMelhor').textContent=fmt0(melhor);
+    document.getElementById('rMedia').textContent=fmt0(media);
+    document.getElementById('rDias').textContent=dias.length;
+  }else{
+    document.getElementById('rMelhor').textContent='—';
+    document.getElementById('rMedia').textContent='—';
+    document.getElementById('rDias').textContent='—';
+  }
 }
 
 async function carregarAtual(){
@@ -113,9 +125,7 @@ async function carregarAtual(){
       // migra o valor antigo para o dia que estava registrado
       vendas={}; if(d.dia) vendas[d.dia]=d.acc;
     }
-    if(d.conquistas && typeof d.conquistas==='object') conquistas=d.conquistas;
     atualizarPreview();
-    renderConqAdmin();
   }catch(e){console.error(e);}
 }
 
@@ -134,7 +144,7 @@ async function salvar(){
     const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`,{
       method:'PUT',
       headers:{'Content-Type':'application/json','X-Master-Key':CONFIG.WRITE_KEY},
-      body:JSON.stringify({vendas, acc, dia:maxDia(), conquistas, ts:Date.now()})
+      body:JSON.stringify({vendas, acc, dia:maxDia(), ts:Date.now()})
     });
     if(!r.ok)throw new Error('HTTP '+r.status);
     msg.className='msg ok';msg.textContent='✔ Publicado! Acumulado: '+fmt(acc);
@@ -146,69 +156,6 @@ async function salvar(){
     console.error(e);
   }finally{btn.disabled=false;}
 }
-
-// ---- CONQUISTAS ----
-const CONQ_DEFS=[
-  {k:'seq',ico:'🔥',nome:'Sequência'},
-  {k:'anual',ico:'📅',nome:'Anual da Semana'},
-  {k:'recorde',ico:'🚀',nome:'Dia Recorde'},
-  {k:'resgate',ico:'🤝',nome:'Resgate'},
-  {k:'tri',ico:'🥉',nome:'Plano Trimestral'},
-  {k:'sem',ico:'🥈',nome:'Plano Semestral'},
-  {k:'ano',ico:'🥇',nome:'Plano Anual (12m)'},
-  {k:'dezoito',ico:'💎',nome:'Plano 18 Meses'},
-];
-let conquistas={};
-
-function renderConqAdmin(){
-  const wrap=document.getElementById('conqWrap');
-  wrap.innerHTML='';
-  CONQ_DEFS.forEach(d=>{
-    const item=conquistas[d.k]||{on:false,n:0};
-    const row=document.createElement('div');
-    row.className='conq'+(item.on?' on':'');
-    row.innerHTML=`
-      <div class="nm">${d.ico} ${d.nome}</div>
-      <div class="ctrl">
-        <button class="stp" onclick="stepConq('${d.k}',-1)">–</button>
-        <span class="num" id="num-${d.k}">${item.n||0}</span>
-        <button class="stp" onclick="stepConq('${d.k}',1)">+</button>
-        <button class="tgl" onclick="toggleConq('${d.k}')">${item.on?'Ativa':'Off'}</button>
-      </div>`;
-    wrap.appendChild(row);
-  });
-}
-function toggleConq(k){
-  const item=conquistas[k]||{on:false,n:0};
-  item.on=!item.on;
-  if(item.on && (!item.n||item.n<1)) item.n=1;
-  conquistas[k]=item;
-  renderConqAdmin();
-}
-function stepConq(k,delta){
-  const item=conquistas[k]||{on:false,n:0};
-  item.n=Math.max(0,(item.n||0)+delta);
-  if(item.n>0) item.on=true;
-  if(item.n===0) item.on=false;
-  conquistas[k]=item;
-  renderConqAdmin();
-}
-async function salvarConquistas(){
-  const btn=document.getElementById('conqBtn'),msg=document.getElementById('conqMsg');
-  btn.disabled=true;msg.className='msg';msg.textContent='Publicando…';
-  try{
-    const acc=somaAcc();
-    const r=await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`,{
-      method:'PUT',
-      headers:{'Content-Type':'application/json','X-Master-Key':CONFIG.WRITE_KEY},
-      body:JSON.stringify({vendas, acc, dia:maxDia(), conquistas, ts:Date.now()})
-    });
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    msg.className='msg ok';msg.textContent='✔ Conquistas publicadas!';
-  }catch(e){
-    msg.className='msg err';msg.textContent='Erro ao publicar conquistas.';
-    console.error(e);
-  }finally{btn.disabled=false;}
-}</script>
+</script>
 </body>
 </html>
