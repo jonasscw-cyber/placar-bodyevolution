@@ -116,7 +116,7 @@
     <div class="card">
       <div class="label">Faturamento acumulado</div>
       <div class="bignum acc" id="accDisplay">R$ 0,00</div>
-      <div class="sub">Meta principal (Acampamento Ouro): <b>R$ 99.400,00</b></div>
+      <div class="sub">Meta principal (Acampamento Ouro): <b>R$ 97.000,00</b></div>
       <div class="pace-row">
         <div class="pace-chip"><div class="pl">Falta p/ próximo</div><div class="pv" id="faltaNext">—</div></div>
         <div class="pace-chip"><div class="pl">Dias restantes</div><div class="pv" id="diasRest">—</div></div>
@@ -127,7 +127,7 @@
     <div class="card">
       <div class="label">Próximo acampamento</div>
       <div class="bignum" id="nextMedal" style="font-size:clamp(34px,5vw,52px)">🏕️ Bronze</div>
-      <div class="sub" id="nextMedalVal">R$ 84.200,00</div>
+      <div class="sub" id="nextMedalVal">R$ 84.000,00</div>
       <div class="sub" style="margin-top:14px">Bônus da faixa em jogo agora:</div>
       <div class="bignum" id="nextBonus" style="font-size:34px;color:var(--gold)">R$ 600</div>
       <div class="sub" id="nextBonusC" style="font-size:13px">(equipe • R$ 300 por consultora)</div>
@@ -225,10 +225,10 @@
         <polyline points="14,55 27,47 37,35 46,21 52,5" fill="none" stroke="#ffd9a0" stroke-width=".5" stroke-dasharray="1.6 1.6" opacity=".55" stroke-linecap="round"/>
       </svg>
       <!-- acampamentos posicionados sobre a trilha (left / bottom em %) -->
-      <div class="camp bronze" data-meta="84200" style="left:20%;bottom:22%"><span class="flag">🏕️</span><div class="lbl"><div class="cname">Bronze</div><div class="cval">R$ 84.200</div></div></div>
-      <div class="camp prata" data-meta="91800" style="left:30%;bottom:42%"><span class="flag">⛺</span><div class="lbl"><div class="cname">Prata</div><div class="cval">R$ 91.800</div></div></div>
-      <div class="camp ouro" data-meta="99400" style="left:40%;bottom:65%"><span class="flag">🏔️</span><div class="lbl"><div class="cname">Ouro</div><div class="cval">R$ 99.400</div></div></div>
-      <div class="camp diamante" data-meta="111200" style="left:50%;bottom:92%"><span class="flag">⛰️</span><div class="lbl"><div class="cname">Cume</div><div class="cval">R$ 111.200</div></div></div>
+      <div class="camp bronze" data-meta="84000" style="left:20%;bottom:22%"><span class="flag">🏕️</span><div class="lbl"><div class="cname">Bronze</div><div class="cval">R$ 84.000</div></div></div>
+      <div class="camp prata" data-meta="90000" style="left:30%;bottom:42%"><span class="flag">⛺</span><div class="lbl"><div class="cname">Prata</div><div class="cval">R$ 90.000</div></div></div>
+      <div class="camp ouro" data-meta="97000" style="left:40%;bottom:65%"><span class="flag">🏔️</span><div class="lbl"><div class="cname">Ouro</div><div class="cval">R$ 97.000</div></div></div>
+      <div class="camp diamante" data-meta="105000" style="left:50%;bottom:92%"><span class="flag">⛰️</span><div class="lbl"><div class="cname">Cume</div><div class="cval">R$ 105.000</div></div></div>
       <!-- ritmo e alpinista -->
       <div class="pace-flag" id="paceFlag" style="left:14%;bottom:8%">🚩</div>
       <div class="climber" id="climber" style="left:14%;bottom:8%">
@@ -264,10 +264,10 @@
       <table id="tabFaixas">
         <thead><tr><th>Acampamento</th><th>Meta</th><th>Bônus equipe</th><th>Por consultora</th></tr></thead>
         <tbody>
-          <tr data-meta="84200"><td class="faixa" style="color:var(--bronze)">🏕️ Bronze</td><td class="num">R$ 84.200</td><td>R$ 600</td><td>R$ 300</td></tr>
-          <tr data-meta="91800"><td class="faixa" style="color:var(--silver)">⛺ Prata</td><td class="num">R$ 91.800</td><td>R$ 1.200</td><td>R$ 600</td></tr>
-          <tr data-meta="99400"><td class="faixa" style="color:var(--gold)">🏔️ Ouro</td><td class="num">R$ 99.400</td><td>R$ 2.000</td><td>R$ 1.000</td></tr>
-          <tr data-meta="111200"><td class="faixa" style="color:var(--diamond)">⛰️ Cume</td><td class="num">R$ 111.200</td><td>R$ 3.000</td><td>R$ 1.500</td></tr>
+          <tr data-meta="84000"><td class="faixa" style="color:var(--bronze)">🏕️ Bronze</td><td class="num">R$ 84.000</td><td>R$ 600</td><td>R$ 300</td></tr>
+          <tr data-meta="90000"><td class="faixa" style="color:var(--silver)">⛺ Prata</td><td class="num">R$ 90.000</td><td>R$ 1.200</td><td>R$ 600</td></tr>
+          <tr data-meta="97000"><td class="faixa" style="color:var(--gold)">🏔️ Ouro</td><td class="num">R$ 97.000</td><td>R$ 2.000</td><td>R$ 1.000</td></tr>
+          <tr data-meta="105000"><td class="faixa" style="color:var(--diamond)">⛰️ Cume</td><td class="num">R$ 105.000</td><td>R$ 3.000</td><td>R$ 1.500</td></tr>
         </tbody>
       </table>
       <div class="sub" style="font-size:13px">Bônus substitutivo: vale o acampamento mais alto atingido (não acumula).</div>
@@ -291,20 +291,20 @@
 
 <script src="config.js"></script>
 <script>
-const BASE=108000, DIAS_TOTAL=31, OURO=99400, MAX=111200;
+const BASE=108000, DIAS_TOTAL=31, OURO=97000, MAX=105000;
 // pontos da trilha (acumulado -> posição left/bottom em %), para o alpinista seguir a montanha
 const TRILHA=[
   {v:0,      left:14, bottom:8},   // pé da montanha (largada)
-  {v:84200,  left:27, bottom:22},  // ao lado do Bronze (direita)
-  {v:91800,  left:37, bottom:42},  // ao lado da Prata (direita)
-  {v:99400,  left:46, bottom:65},  // ao lado do Ouro (direita)
-  {v:111200, left:52, bottom:92},  // ao lado do Cume (direita)
+  {v:84000,  left:27, bottom:22},  // ao lado do Bronze (direita)
+  {v:90000,  left:37, bottom:42},  // ao lado da Prata (direita)
+  {v:97000,  left:46, bottom:65},  // ao lado do Ouro (direita)
+  {v:105000, left:52, bottom:92},  // ao lado do Cume (direita)
 ];
 const metas=[
-  {nome:'🏕️ Bronze',val:84200,bonusEq:'R$ 600',bonusC:'R$ 300'},
-  {nome:'⛺ Prata',val:91800,bonusEq:'R$ 1.200',bonusC:'R$ 600'},
-  {nome:'🏔️ Ouro',val:99400,bonusEq:'R$ 2.000',bonusC:'R$ 1.000'},
-  {nome:'⛰️ Cume',val:111200,bonusEq:'R$ 3.000',bonusC:'R$ 1.500'},
+  {nome:'🏕️ Bronze',val:84000,bonusEq:'R$ 600',bonusC:'R$ 300'},
+  {nome:'⛺ Prata',val:90000,bonusEq:'R$ 1.200',bonusC:'R$ 600'},
+  {nome:'🏔️ Ouro',val:97000,bonusEq:'R$ 2.000',bonusC:'R$ 1.000'},
+  {nome:'⛰️ Cume',val:105000,bonusEq:'R$ 3.000',bonusC:'R$ 1.500'},
 ];
 const fmt=v=>'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt0=v=>'R$ '+Math.round(v).toLocaleString('pt-BR');
